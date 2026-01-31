@@ -23,17 +23,37 @@ features = []
 labels = []
 
 for item in training:
+    # Extract time features with fallback for older data
+    day_of_week = item.get('day_of_week')
+    hour_of_day = item.get('hour_of_day')
+
+    # Categorize time of day
+    if 0 <= hour_of_day < 6:
+        time_period = "Early Morning"
+    elif 6 <= hour_of_day < 12:
+        time_period = "Morning"
+    elif 12 <= hour_of_day < 17:
+        time_period = "Afternoon"
+    elif 17 <= hour_of_day < 21:
+        time_period = "Evening"
+    else:
+        time_period = "Night"
+
     features.append(
-        "\n".join([f"Price: {item['price']}",
-        f"Headline: {item['title']}",
-        f"Summary: {item['summary']}"])
+        "\n".join([
+            f"Day: {day_of_week}",
+            f"Time: {time_period} ({hour_of_day}:00)",
+            f"Price: {item['price']}",
+            f"Headline: {item['title']}",
+            f"Summary: {item['summary']}"
+        ])
     )
 
     ## Generate labels based on percentage change
     ## Actions Buy / Sell / Hold
-    if item['percentage'] < -0.01:
+    if item['percentage'] < -0.02:
         labels.append(sell)
-    elif item['percentage'] > 0.01:
+    elif item['percentage'] > 0.02:
         labels.append(buy)
     else:
         labels.append(hold)

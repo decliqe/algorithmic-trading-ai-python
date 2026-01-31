@@ -1,7 +1,7 @@
 yfinance
 kagglehub
 tensorflow
-sentance-transformers
+sentence-transformers
 numpy
 pandas
 scikit-learn
